@@ -33,11 +33,12 @@ def dbscan_clustering(file_name):
     # define dataset
     cups, avg_width, avg_height = get_locations(img)
     # define the model
-    model = DBSCAN(eps=2 * avg_width, min_samples=2)
+    model = DBSCAN(eps=1.2*avg_width, min_samples=2)
     # fit the model
     model.fit(cups)
     # assign a cluster to each example
     yhat = model.fit_predict(cups)
+
     # retrieve unique clusters
     clusters = unique(yhat)
     # initialize a figure
@@ -56,4 +57,52 @@ def dbscan_clustering(file_name):
 
 img_name = 'pong2.jpg'
 dbscan_clustering(img_name)
+# load image first
+img = cv2.imread(img_name)
+# now get variables passing in the image NOT just the string of the filename
+cups, avg_width, avg_height = get_locations(img)
+# define the model
+model = DBSCAN(eps=1.2*avg_width, min_samples=2)
+# fit the model
+model.fit(cups)
+# assign a cluster to each example
+yhat = model.fit_predict(cups)
+
+# print(cups[:,0])
+# no water cup
+if len(cups) != 11:
+    print("Error: {}/11 cups detected".format(len(cups)))
+
+x = cups[:, 0]
+y = cups[:, 1]
+mag , ang = (np.zeros((len(x), len(x))), )*2
+print(mag)
+for i in range(0, len(cups)):
+    for j in range(0, len(cups)):
+        x_diff = x[i]-x[j]
+        y_diff = y[i]-y[j]
+        mag_ij = (x_diff**2+y_diff**2)**0.5
+        if (x[i]-x[j]) == 0:
+            ang[i,j] = 0
+        else:
+            ang[i, j] = np.arctan((x[i]-y[j])/(x[i]-x[j]))*(180/np.pi)
+
+print(mag)
+#print(mag.min(), mag.max(), mag)
+
+for i in range(0, len(cups)):
+    for j in range(0, len(cups)):
+        if mag[i, j] <= 10:
+           poo = 0
+
+
+
+# no hits
+
+# hits only on left
+
+# hits only on right
+
+# hits on both
+
 plt.show()
